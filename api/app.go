@@ -8,7 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
-	"time"
 )
 
 type App struct {
@@ -17,12 +16,18 @@ type App struct {
 }
 
 func (app *App) Initialize() {
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017/")
-	client, err := mongo.Connect(ctx, clientOptions)
+	clientOptions := options.Client().ApplyURI("mongodb://mongo")
+	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	err = client.Ping(context.TODO(), nil)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	app.DB = client
 	app.Router = mux.NewRouter()
 	app.initializeRoutes()

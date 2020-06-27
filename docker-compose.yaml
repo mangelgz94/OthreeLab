@@ -1,0 +1,19 @@
+version: '3.3'
+services:
+  api:
+    container_name: 'api'
+    build:
+      context: './api'
+      dockerfile: 'Dockerfile'
+
+    ports:
+      - '8081:8081'
+    volumes:
+      - './api:/go/src/app'
+    depends_on:
+      - 'mongo'
+  mongo:
+    image: 'mongo:latest'
+    container_name: 'mongo'
+    ports:
+      - '27100:27017'
